@@ -28,10 +28,18 @@ node default {
   # This is where you can declare classes for all nodes.
   # Example:
   #   class { 'my_class': }
-}
+  if $::osfamily == 'windows' {
+    File { 'C:\Users\Administrator\wannacry.txt':
+      ensure => absent,
+      content => 'pwned by wannacry',
+    }
 
-# Set defaults for all `exec` resources
-Exec {
-  path      => $::path,
-  logoutput => true,
+    class { 'wsus_client':
+      server_url             => 'http://myserver:8530',
+      auto_update_option     => "Scheduled",
+      scheduled_install_day  => "Tuesday",
+      scheduled_install_hour => 2,
+      enable_status_server => true,
+    }
+  }
 }
